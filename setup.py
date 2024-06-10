@@ -6,7 +6,7 @@ setup(
     packages=find_packages(),
     install_requires=[],
     entry_points={
-        "console_scripts": ["log-analyzer=log_analyzer.log_analyzer:main"]
+        "console_scripts": ["log-analyzer=src.log_analyzer:main"]
     },
 )
 
