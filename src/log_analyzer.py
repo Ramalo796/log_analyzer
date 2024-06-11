@@ -2,81 +2,99 @@ import argparse
 import json
 from collections import Counter
 
-def parse_log_file(file_path):
-    """
-    Función para analizar el archivo de registro y devolver una lista de entradas analizadas.
-    """
-    parsed_entries = []
+"""
+Function to analyze the log file with predefined structure
+"""
+def log_file_reader(file_path):
+    
+    logs = []
 
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
-            for line in file:
-                parts = line.split()
+            for row in file:
+                parts = row.split()
                 if len(parts) < 10:
                     continue
 
                 timestamp = float(parts[0])
                 response_header_size = int(parts[1])
-                client_ip = parts[2]
+                client_ip_address = parts[2]
                 http_response_code = parts[3]
                 response_size = int(parts[4])
                 http_request_method = parts[5]
                 url = parts[6]
                 username = parts[7]
-                access_info = parts[8]
+                type_access_destination_ip = parts[8]
                 response_type = parts[9]
 
-                parsed_entries.append({
+                logs.append({
                     "timestamp": timestamp,
                     "response_header_size": response_header_size,
-                    "client_ip": client_ip,
+                    "client_ip_address": client_ip_address,
                     "http_response_code": http_response_code,
                     "response_size": response_size,
                     "http_request_method": http_request_method,
                     "url": url,
                     "username": username,
-                    "access_info": access_info,
+                    "type_access_destination_ip": type_access_destination_ip,
                     "response_type": response_type
                 })
     except FileNotFoundError:
-        print(f"Error: El archivo '{file_path}' no existe.")
+        print(f"Error: The file '{file_path}' does not exist")
     except Exception as e:
-        print(f"Error al procesar el archivo '{file_path}': {e}")
+        print(f"Error during processing of '{file_path}': {e}")
 
-    return parsed_entries
+    return logs
 
-def analyze_most_frequent_ip(entries):
-    """
-    Función para analizar la IP más frecuente en las entradas analizadas.
-    """
-    ip_counter = Counter(entry["client_ip"] for entry in entries)
+
+"""
+Function for analyzing the most frequent IP address among the input file
+"""
+def most_frequent_ip(logs):
+    
+    ip_counter = Counter(entry["client_ip_address"] for row in logs)
     most_frequent_ip = ip_counter.most_common(1)[0][0]
+    
     return most_frequent_ip
 
-def analyze_least_frequent_ip(entries):
-    """
-    Función para analizar la IP menos frecuente en las entradas analizadas.
-    """
-    ip_counter = Counter(entry["client_ip"] for entry in entries)
+
+"""
+Function for analyzing the least frequent IP address among the input file
+"""
+def least_frequent_ip(logs):
+    
+    ip_counter = Counter(entry["client_ip_address"] for row in logs)
     least_frequent_ip = ip_counter.most_common()[-1][0]
+    
     return least_frequent_ip
 
-def analyze_events_per_second(entries):
-    """
-    Función para analizar los eventos por segundo en las entradas analizadas.
-    """
-    timestamps = [entry["timestamp"] for entry in entries]
+
+"""
+Function for analyzing the events per second of the input file
+"""
+def events_per_second(logs):
+    
+    timestamps = [entry["timestamp"] for row in logs]
     timestamps.sort()
-    time_diff = timestamps[-1] - timestamps[0]
-    events_per_second = len(entries) / time_diff if time_diff > 0 else 0
+    total_time = timestamps[-1] - timestamps[0]
+    if total_time > 0:
+        events_per_second = len(entries) / total_time
+    else:
+        events_per_second = 0
+        
     return events_per_second
 
-def analyze_total_bytes_exchanged(entries):
-    """
-    Función para analizar el total de bytes intercambiados en las entradas analizadas.
-    """
-    total_bytes = sum(entry["response_size"] for entry in entries)
+
+"""
+Function for analyzing the total number of bytes exchanged among the input file
+"""
+def total_bytes_exchanged(logs):
+    
+    total_bytes = sum(entry["response_size"] for row in logs)
+    
     return total_bytes
+
+
 
 def main():
     parser = argparse.ArgumentParser(description="Log Analyzer")
@@ -88,28 +106,30 @@ def main():
     parser.add_argument("--bytes", action='store_true', help="Total amount of bytes exchanged")
     args = parser.parse_args()
 
-    all_entries = []
+    logs = []
     for input_file in args.input:
-        all_entries.extend(parse_log_file(input_file))
+        logs.extend(log_file_reader(input_file))
 
-    output_data = {}
+    output = {}
 
     if args.mfip:
-        output_data["most_frequent_ip"] = analyze_most_frequent_ip(all_entries)
+        output["most_frequent_ip"] = most_frequent_ip(logs)
 
     if args.lfip:
-        output_data["least_frequent_ip"] = analyze_least_frequent_ip(all_entries)
+        output["least_frequent_ip"] = analyze_least_frequent_ip(logs)
 
     if args.eps:
-        output_data["events_per_second"] = analyze_events_per_second(all_entries)
+        output["events_per_second"] = analyze_events_per_second(logs)
 
     if args.bytes:
-        output_data["total_bytes"] = analyze_total_bytes_exchanged(all_entries)
+        output["total_bytes"] = analyze_total_bytes_exchanged(logs)
 
-    print(output_data)
+    #print(output)
 
     with open(args.output, 'w') as output_file:
-        json.dump(output_data, output_file, indent=4)
+        json.dump(output, output_file, indent=4)
+
+
 
 if __name__ == "__main__":
     main()
