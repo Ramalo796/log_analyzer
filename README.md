@@ -20,7 +20,7 @@ This library has been created to parse the logs of a file with a given format. I
      ```
    - Install the library using Python:
      ```
-     python setup.py install
+     pip install .
      ```
 
 3. **Unzip the Log File:**
