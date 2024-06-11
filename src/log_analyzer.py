@@ -7,45 +7,39 @@ Function to analyze the log file with predefined structure
 """
 def log_file_reader(file_path):
     logs = []
-    try:
-        with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
-            for row in file:
-                parts = row.split()
-                if len(parts) < 10:
-                    continue
+    with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
+        for row in file:
+            parts = row.split()
+            if len(parts) < 10:
+                continue
 
-                try:
-                    timestamp = float(parts[0])
-                    response_header_size = int(parts[1])
-                    client_ip_address = parts[2]
-                    http_response_code = parts[3]
-                    response_size = int(parts[4])
-                    http_request_method = parts[5]
-                    url = parts[6]
-                    username = parts[7]
-                    type_access_destination_ip = parts[8]
-                    response_type = parts[9]
-                except ValueError as ve:
-                    print(f"Warning: Skipping row with invalid data: {row.strip()} (Error: {ve})")
-                    continue
+            try:
+                timestamp = float(parts[0])
+                response_header_size = int(parts[1])
+                client_ip_address = parts[2]
+                http_response_code = parts[3]
+                response_size = int(parts[4])
+                http_request_method = parts[5]
+                url = parts[6]
+                username = parts[7]
+                type_access_destination_ip = parts[8]
+                response_type = parts[9]
+            except ValueError as ve:
+                print(f"Warning: Skipping row with invalid data: {row.strip()} (Error: {ve})")
+                continue
 
-                logs.append({
-                    "timestamp": timestamp,
-                    "response_header_size": response_header_size,
-                    "client_ip_address": client_ip_address,
-                    "http_response_code": http_response_code,
-                    "response_size": response_size,
-                    "http_request_method": http_request_method,
-                    "url": url,
-                    "username": username,
-                    "type_access_destination_ip": type_access_destination_ip,
-                    "response_type": response_type
-                })
-    except FileNotFoundError:
-        print(f"Error: The file '{file_path}' does not exist")
-    except Exception as e:
-        print(f"Error during processing of '{file_path}': {e}")
-
+            logs.append({
+                "timestamp": timestamp,
+                "response_header_size": response_header_size,
+                "client_ip_address": client_ip_address,
+                "http_response_code": http_response_code,
+                "response_size": response_size,
+                "http_request_method": http_request_method,
+                "url": url,
+                "username": username,
+                "type_access_destination_ip": type_access_destination_ip,
+                "response_type": response_type
+            })
     return logs
 
 """
@@ -102,7 +96,14 @@ def main():
 
     logs = []
     for input_file in args.input:
-        logs.extend(log_file_reader(input_file))
+        try:
+            logs.extend(log_file_reader(input_file))
+        except FileNotFoundError:
+            print(f"Error: The file '{input_file}' does not exist")
+            return
+        except Exception as e:
+            print(f"Error during processing of '{input_file}': {e}")
+            return
 
     output = {}
 
