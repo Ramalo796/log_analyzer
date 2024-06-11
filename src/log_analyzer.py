@@ -6,9 +6,7 @@ from collections import Counter
 Function to analyze the log file with predefined structure
 """
 def log_file_reader(file_path):
-    
     logs = []
-
     try:
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as file:
             for row in file:
@@ -46,55 +44,41 @@ def log_file_reader(file_path):
 
     return logs
 
-
 """
 Function for analyzing the most frequent IP address among the input file
 """
 def most_frequent_ip(logs):
-    
-    ip_counter = Counter(entry["client_ip_address"] for row in logs)
+    ip_counter = Counter(entry["client_ip_address"] for entry in logs)
     most_frequent_ip = ip_counter.most_common(1)[0][0]
-    
     return most_frequent_ip
-
 
 """
 Function for analyzing the least frequent IP address among the input file
 """
 def least_frequent_ip(logs):
-    
-    ip_counter = Counter(entry["client_ip_address"] for row in logs)
+    ip_counter = Counter(entry["client_ip_address"] for entry in logs)
     least_frequent_ip = ip_counter.most_common()[-1][0]
-    
     return least_frequent_ip
-
 
 """
 Function for analyzing the events per second of the input file
 """
 def events_per_second(logs):
-    
-    timestamps = [entry["timestamp"] for row in logs]
+    timestamps = [entry["timestamp"] for entry in logs]
     timestamps.sort()
     total_time = timestamps[-1] - timestamps[0]
     if total_time > 0:
-        events_per_second = len(entries) / total_time
+        events_per_second = len(logs) / total_time
     else:
         events_per_second = 0
-        
     return events_per_second
-
 
 """
 Function for analyzing the total number of bytes exchanged among the input file
 """
 def total_bytes_exchanged(logs):
-    
-    total_bytes = sum(entry["response_size"] for row in logs)
-    
+    total_bytes = sum(entry["response_size"] for entry in logs)
     return total_bytes
-
-
 
 def main():
     parser = argparse.ArgumentParser(description="Log Analyzer")
@@ -116,23 +100,20 @@ def main():
         output["most_frequent_ip"] = most_frequent_ip(logs)
 
     if args.lfip:
-        output["least_frequent_ip"] = analyze_least_frequent_ip(logs)
+        output["least_frequent_ip"] = least_frequent_ip(logs)
 
     if args.eps:
-        output["events_per_second"] = analyze_events_per_second(logs)
+        output["events_per_second"] = events_per_second(logs)
 
     if args.bytes:
-        output["total_bytes"] = analyze_total_bytes_exchanged(logs)
-
-    #print(output)
+        output["total_bytes"] = total_bytes_exchanged(logs)
 
     with open(args.output, 'w') as output_file:
         json.dump(output, output_file, indent=4)
 
-
-
 if __name__ == "__main__":
     main()
+
 
 
 
