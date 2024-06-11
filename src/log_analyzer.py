@@ -67,6 +67,8 @@ def events_per_second(logs):
     timestamps = [entry["timestamp"] for entry in logs]
     timestamps.sort()
     total_time = timestamps[-1] - timestamps[0]
+    print(total_time)
+    print(len(logs))
     if total_time > 0:
         events_per_second = len(logs) / total_time
     else:
