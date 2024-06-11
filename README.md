@@ -30,7 +30,7 @@ This library has been created to parse the logs of a file with a given format. I
      gunzip log_analyzer/data/inputs/access.log.gz
      ```
    - Option B: Use a Decompression Tool:
-     If you don't have gunzip, you can use a graphical or command-line decompression tool to unzip the `access.log.gz` file
+     If you don't have gunzip, you can use a graphical or command-line decompression tool to unzip the `access.log.gz` file in log_analyzer/data/inputs/
 
 4. **Run the Library:**
    To run the library, use the following command:
