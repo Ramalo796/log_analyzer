@@ -12,6 +12,9 @@ In order to run this library follow the steps below:
             b - Click the "Code" button and then click "Download ZIP".
             c - Extract the contents of the ZIP file on your machine.
 
+2:Install the Library
+	Navigate to the cloned or extracted repository directory --> cd log_analyzer
+
 
 
 
