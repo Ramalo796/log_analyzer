@@ -121,6 +121,9 @@ def main():
 
     with open(args.output, 'w') as output_file:
         json.dump(output, output_file, indent=4)
+        
+    print("The output is:")   
+    print(output)
 
 if __name__ == "__main__":
     main()
