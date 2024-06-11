@@ -14,16 +14,20 @@ def log_file_reader(file_path):
                 if len(parts) < 10:
                     continue
 
-                timestamp = float(parts[0])
-                response_header_size = int(parts[1])
-                client_ip_address = parts[2]
-                http_response_code = parts[3]
-                response_size = int(parts[4])
-                http_request_method = parts[5]
-                url = parts[6]
-                username = parts[7]
-                type_access_destination_ip = parts[8]
-                response_type = parts[9]
+                try:
+                    timestamp = float(parts[0])
+                    response_header_size = int(parts[1])
+                    client_ip_address = parts[2]
+                    http_response_code = parts[3]
+                    response_size = int(parts[4])
+                    http_request_method = parts[5]
+                    url = parts[6]
+                    username = parts[7]
+                    type_access_destination_ip = parts[8]
+                    response_type = parts[9]
+                except ValueError as ve:
+                    print(f"Warning: Skipping row with invalid data: {row.strip()} (Error: {ve})")
+                    continue
 
                 logs.append({
                     "timestamp": timestamp,
@@ -64,6 +68,8 @@ def least_frequent_ip(logs):
 Function for analyzing the events per second of the input file
 """
 def events_per_second(logs):
+    if not logs:
+        return 0
     timestamps = [entry["timestamp"] for entry in logs]
     timestamps.sort()
     total_time = timestamps[-1] - timestamps[0]
@@ -90,6 +96,10 @@ def main():
     parser.add_argument("--bytes", action='store_true', help="Total amount of bytes exchanged")
     args = parser.parse_args()
 
+    if not (args.mfip or args.lfip or args.eps or args.bytes):
+        print("Error: At least one analysis option (--mfip, --lfip, --eps, --bytes) must be specified")
+        return
+
     logs = []
     for input_file in args.input:
         logs.extend(log_file_reader(input_file))
@@ -113,7 +123,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
