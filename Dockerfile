@@ -11,6 +11,6 @@ COPY . /app
 RUN pip install .
 
 # Specify the command to run your Python script
-CMD ["python", "src/log_analyzer.py", "data/inputs/access.log", "data/result.json", "--mfip", "--lfip", "--eps", "--bytes"]
+CMD ["python", "src/log_analyzer.py", "data/inputs/access.log", "data/outputs/out.json", "--mfip", "--lfip", "--eps", "--bytes"]
 
 
