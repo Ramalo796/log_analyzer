@@ -11,6 +11,7 @@ This library has been created to parse the logs of a file with a given format. I
 		- Go to the repository page on GitHub: [https://github.com/Ramalo796/log_analyzer](https://github.com/Ramalo796/log_analyzer)
 		- Click the "Code" button and then click "Download ZIP"
 		- Extract the contents of the ZIP file on your machine
+   - Atention: the code is prepared to parse different input and output formats (.cvs, .json and .log), the repository only has an example of .log, if you want to try another type, the code can do it, but it is prepared for csv files with whitespace separations, json files with log data without headers and .log files with whitespace separations.
 
 
 2. **Install the Library:**
