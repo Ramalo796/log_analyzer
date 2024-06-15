@@ -2,7 +2,6 @@ import argparse
 import json
 import csv
 from collections import Counter
-from datetime import datetime
 
 def log_file_reader(file_path):
     logs = []
@@ -41,21 +40,22 @@ def log_file_reader(file_path):
                 })
     elif file_path.endswith('.csv'):
         with open(file_path, newline='', encoding='utf-8', errors='ignore') as csvfile:
-            reader = csv.reader(csvfile)
-            for row in reader:
-                if len(row) < 10:
+            for row in csvfile:
+                parts = row.split()
+                if len(parts) < 10:
                     continue
+
                 try:
-                    timestamp = float(row[0])
-                    response_header_size = int(row[1])
-                    client_ip_address = row[2]
-                    http_response_code = row[3]
-                    response_size = int(row[4])
-                    http_request_method = row[5]
-                    url = row[6]
-                    username = row[7]
-                    type_access_destination_ip = row[8]
-                    response_type = row[9]
+                    timestamp = float(parts[0])
+                    response_header_size = int(parts[1])
+                    client_ip_address = parts[2]
+                    http_response_code = parts[3]
+                    response_size = int(parts[4])
+                    http_request_method = parts[5]
+                    url = parts[6]
+                    username = parts[7]
+                    type_access_destination_ip = parts[8]
+                    response_type = parts[9]
                 except ValueError:
                     continue
 
@@ -80,11 +80,15 @@ def log_file_reader(file_path):
 
 def most_frequent_ip(logs):
     ip_counter = Counter(entry["client_ip_address"] for entry in logs)
+    if not ip_counter:
+        return None
     most_frequent_ip = ip_counter.most_common(1)[0][0]
     return most_frequent_ip
 
 def least_frequent_ip(logs):
     ip_counter = Counter(entry["client_ip_address"] for entry in logs)
+    if not ip_counter:
+        return None
     least_frequent_ip = ip_counter.most_common()[-1][0]
     return least_frequent_ip
 
