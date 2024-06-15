@@ -42,4 +42,7 @@ This library has been created to parse the logs of a file with a given format. I
    ```
    docker run -v "$(pwd)/outputs:/app/data/outputs" log_analyzer_image
    ```
+
+6. **Atention**
+The code is prepared to parse different input formats (.cvs, .json and .log), the repository only has an example of .log, if you want to try another type, the code can do it, but it is prepared for csv files with whitespace separations, json files with log data without headers and .log files with whitespace separations.
   
