@@ -40,7 +40,7 @@ def log_file_reader(file_path):
                 })
     elif file_path.endswith('.csv'):
         with open(file_path, newline='', encoding='utf-8', errors='ignore') as csvfile:
-            reader = csv.reader(csvfile, delimiter=',')
+            reader = csv.reader(csvfile, delimiter=' ')
             for row in reader:
                 if len(row) < 10:
                     continue
