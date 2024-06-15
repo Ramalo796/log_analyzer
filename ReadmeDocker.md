@@ -47,7 +47,7 @@ This library has been created to parse the logs of a file with a given format. I
 The code is prepared to parse different input formats (.cvs, .json and .log), the repository only has an example of .log, if you want to try another type, the code can do it, but it is prepared for csv files with whitespace separations, json files with log data without headers and .log files with whitespace separations.
 The executable is predefined like this:
  ```
- docker run -v "$(pwd)/outputs:/app/data/outputs" log_analyzer_image
+ CMD ["python", "src/log_analyzer.py", "data/inputs/access.log", "data/outputs/out.json", "--mfip", "--lfip", "--eps", "--bytes"]
  ```
 If you want to change something, such as the input or output file, you should modify it in this row present in the file named DockerFile
   
