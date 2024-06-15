@@ -40,22 +40,22 @@ def log_file_reader(file_path):
                 })
     elif file_path.endswith('.csv'):
         with open(file_path, newline='', encoding='utf-8', errors='ignore') as csvfile:
-            for row in csvfile:
-                parts = row.split()
-                if len(parts) < 10:
+            reader = csv.reader(csvfile, delimiter=',')
+            for row in reader:
+                if len(row) < 10:
                     continue
 
                 try:
-                    timestamp = float(parts[0])
-                    response_header_size = int(parts[1])
-                    client_ip_address = parts[2]
-                    http_response_code = parts[3]
-                    response_size = int(parts[4])
-                    http_request_method = parts[5]
-                    url = parts[6]
-                    username = parts[7]
-                    type_access_destination_ip = parts[8]
-                    response_type = parts[9]
+                    timestamp = float(row[0])
+                    response_header_size = int(row[1])
+                    client_ip_address = row[2]
+                    http_response_code = row[3]
+                    response_size = int(row[4])
+                    http_request_method = row[5]
+                    url = row[6]
+                    username = row[7]
+                    type_access_destination_ip = row[8]
+                    response_type = row[9]
                 except ValueError:
                     continue
 
@@ -73,9 +73,45 @@ def log_file_reader(file_path):
                 })
     elif file_path.endswith('.json'):
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as jsonfile:
-            logs = json.load(jsonfile)
+            try:
+                data = json.load(jsonfile)
+                if isinstance(data, list):
+                    # JSON sin nombres explícitos (lista de listas)
+                    if all(isinstance(entry, list) and len(entry) >= 10 for entry in data):
+                        for entry in data:
+                            try:
+                                timestamp = float(entry[0])
+                                response_header_size = int(entry[1])
+                                client_ip_address = entry[2]
+                                http_response_code = entry[3]
+                                response_size = int(entry[4])
+                                http_request_method = entry[5]
+                                url = entry[6]
+                                username = entry[7]
+                                type_access_destination_ip = entry[8]
+                                response_type = entry[9]
+                            except (ValueError, IndexError):
+                                continue
+
+                            logs.append({
+                                "timestamp": timestamp,
+                                "response_header_size": response_header_size,
+                                "client_ip_address": client_ip_address,
+                                "http_response_code": http_response_code,
+                                "response_size": response_size,
+                                "http_request_method": http_request_method,
+                                "url": url,
+                                "username": username,
+                                "type_access_destination_ip": type_access_destination_ip,
+                                "response_type": response_type
+                            })
+                else:
+                    print(f"Invalid JSON format in file: {file_path}")
+            except json.JSONDecodeError:
+                print(f"Error decoding JSON file: {file_path}")
     else:
         print(f"Error: Unsupported file format for {file_path}")
+
     return logs
 
 def most_frequent_ip(logs):
