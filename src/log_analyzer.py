@@ -44,6 +44,7 @@ def log_file_reader(file_path):
         with open(file_path, newline='', encoding='utf-8', errors='ignore') as csvfile:
             reader = csv.DictReader(csvfile)
             for row in reader:
+                print(row)
                 try:
                     logs.append({
                         "timestamp": float(row['timestamp']),
