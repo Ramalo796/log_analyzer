@@ -1,7 +1,6 @@
 import argparse
 import json
 import csv
-import re
 from collections import Counter
 
 def log_file_reader(file_path):
@@ -42,21 +41,22 @@ def log_file_reader(file_path):
                 })
     elif file_path.endswith('.csv'):
         with open(file_path, newline='', encoding='utf-8', errors='ignore') as csvfile:
-            reader = csv.DictReader(csvfile)
+            reader = csv.reader(csvfile)
             for row in reader:
-                print(row)
+                if len(row) < 10:
+                    continue
                 try:
                     logs.append({
-                        "timestamp": float(row['timestamp']),
-                        "response_header_size": int(row['response_header_size']),
-                        "client_ip_address": row['client_ip_address'],
-                        "http_response_code": row['http_response_code'],
-                        "response_size": int(row['response_size']),
-                        "http_request_method": row['http_request_method'],
-                        "url": row['url'],
-                        "username": row['username'],
-                        "type_access_destination_ip": row['type_access_destination_ip'],
-                        "response_type": row['response_type']
+                        "timestamp": float(row[0]),
+                        "response_header_size": int(row[1]),
+                        "client_ip_address": row[2],
+                        "http_response_code": row[3],
+                        "response_size": int(row[4]),
+                        "http_request_method": row[5],
+                        "url": row[6],
+                        "username": row[7],
+                        "type_access_destination_ip": row[8],
+                        "response_type": row[9]
                     })
                 except ValueError as ve:
                     print(f"Warning: Skipping row with invalid data: {row} (Error: {ve})")
@@ -142,4 +142,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
