@@ -76,7 +76,6 @@ def log_file_reader(file_path):
             try:
                 data = json.load(jsonfile)
                 if isinstance(data, list):
-                    # JSON sin nombres explícitos (lista de listas)
                     if all(isinstance(entry, list) and len(entry) >= 10 for entry in data):
                         for entry in data:
                             try:
@@ -148,7 +147,6 @@ def main():
     parser = argparse.ArgumentParser(description="Log Analyzer")
     parser.add_argument("input", nargs='+', help="Path to one or more input files")
     parser.add_argument("output", help="Path to a file to save output in JSON format")
-    parser.add_argument("--output-format", choices=['json', 'csv'], default='json', help="Output format (default: json)")
     parser.add_argument("--mfip", action='store_true', help="Most frequent IP")
     parser.add_argument("--lfip", action='store_true', help="Least frequent IP")
     parser.add_argument("--eps", action='store_true', help="Events per second")
