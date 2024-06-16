@@ -195,6 +195,10 @@ def main():
                 writer = csv.writer(output_file)
                 for key, value in output.items():
                     writer.writerow([key, value])
+        elif output_file.endswith('.log'):
+            with open(args.output, 'w') as output_file:
+                for key, value in output.items():
+                    output_file.write(f"{key}: {value}\n")
         else:
             print(f"Unsupported output file format: {args.output}")
             return
