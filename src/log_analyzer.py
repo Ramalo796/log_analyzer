@@ -184,16 +184,23 @@ def main():
     if args.bytes:
         output["total_bytes"] = total_bytes_exchanged(logs)
 
-    if args.output_format == 'json':
-        with open(args.output, 'w') as output_file:
-            json.dump(output, output_file, indent=4)
-    elif args.output_format == 'csv':
-        with open(args.output, 'w', newline='') as output_file:
-            writer = csv.writer(output_file)
-            for key, value in output.items():
-                writer.writerow([key, value])
-    else:
-        print(f"Unsupported output format: {args.output_format}")
+    output_file = args.output.lower()
+
+    try:
+        if output_file.endswith('.json'):
+            with open(args.output, 'w') as output_file:
+                json.dump(output, output_file, indent=4)
+        elif output_file.endswith('.csv'):
+            with open(args.output, 'w', newline='') as output_file:
+                writer = csv.writer(output_file)
+                for key, value in output.items():
+                    writer.writerow([key, value])
+        else:
+            print(f"Unsupported output file format: {args.output}")
+            return
+    except Exception as e:
+        print(f"Error writing to output file '{args.output}': {e}")
+        return
 
     print("Analysis completed. Results saved to:", args.output)
 
