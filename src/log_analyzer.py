@@ -198,7 +198,7 @@ def main():
         elif output_file.endswith('.log'):
             with open(args.output, 'w') as output_file:
                 for key, value in output.items():
-                    output_file.write(f"{key}: {value}\n")
+                    output_file.write(f"{value}\n")
         else:
             print(f"Unsupported output file format: {args.output}")
             return
